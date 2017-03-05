@@ -3,8 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/simsalabim/stockprice/finance"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -50,4 +52,13 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 		writer.Write([]byte(weatherJSON()))
 		return
 	}
+
+	if strings.HasPrefix(request.URL.Path, "/grpn") {
+		writer.Header().Set("Content-Type", "text/plain")
+		grpn := finance.FindStockPrice("grpn")
+		result := strconv.FormatFloat(grpn, 'G', -1, 64)
+		writer.Write([]byte(result))
+		return
+	}
+
 }

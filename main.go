@@ -26,12 +26,12 @@ func checkError(err error) {
 
 func handler(writer http.ResponseWriter, request *http.Request) {
 	if request.URL.Path == "/" {
-		http.ServeFile(writer, request, "index.html")
+		http.ServeFile(writer, request, "public_html/index.html")
 		return
 	}
 
 	if request.URL.Path == "/PoweredBy_200px-White_HorizText.png" {
-		http.ServeFile(writer, request, "PoweredBy_200px-White_HorizText.png")
+		http.ServeFile(writer, request, "public_html/PoweredBy_200px-White_HorizText.png")
 		return
 	}
 

@@ -54,18 +54,27 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	if strings.HasPrefix(request.URL.Path, "/grpn") {
-		grpn := finance.FindStockPrice("grpn")
-		result := strconv.FormatFloat(grpn, 'G', -1, 64)
-
+		var result string
+		grpn, err := finance.FindStockPrice("grpn")
+		if err != nil {
+			result = err.Error()
+		} else {
+			result = strconv.FormatFloat(grpn, 'G', -1, 64)
+		}
 		writer.Header().Set("Content-Type", "text/plain")
 		writer.Write([]byte(result))
 		return
 	}
 
 	if strings.HasPrefix(request.URL.Path, "/stockprice/") {
+		var result string
 		symbol := request.URL.Path[strings.Index(request.URL.Path, "/stockprice/")+len("/stockprice/") : len(request.URL.Path)]
-		stockPrice := finance.FindStockPrice(symbol)
-		result := strconv.FormatFloat(stockPrice, 'G', -1, 64)
+		stockPrice, err := finance.FindStockPrice(symbol)
+		if err != nil {
+			result = err.Error()
+		} else {
+			result = strconv.FormatFloat(stockPrice, 'G', -1, 64)
+		}
 
 		writer.Header().Set("Content-Type", "text/plain")
 		writer.Write([]byte(result))

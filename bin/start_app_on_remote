@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ssh $user@$hostname << EOF
+  echo "Restarting the app..."
+  daemonize -c /home/$user/apps/rebot.works -p /home/$user/apps/rebot.works/myapp.pid -E WEATHER_APP_ID=$(cat .weather_app_id) /home/$user/apps/rebot.works/rebot.works
+  echo "The app has restarted. PID:"
+  cat /home/$user/apps/rebot.works/myapp.pid
+EOF

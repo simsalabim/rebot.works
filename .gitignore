@@ -1,2 +1,7 @@
 rebot.works
 .weather_app_id
+.gradletasknamecache
+gradle-app.setting
+.gradle
+/build/
+!gradle-wrapper.jar

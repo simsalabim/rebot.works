@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export PID=$(ssh $user@$hostname "cat /home/$user/apps/rebot.works/myapp.pid")
+ssh $user@$hostname "kill -9 $PID"

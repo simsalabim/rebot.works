@@ -1,0 +1,41 @@
+task copyStaticFiles(type: Copy) {
+  description 'Copies static HTML files to the build  directory.'
+  from 'public_html'
+  into 'build/public_html'
+}
+
+task compile(type: Exec) {
+  description 'Compiles a Go binary for Linux OS and moves it to the build directory.'
+  commandLine './bin/build_release'
+}
+
+task copyReleaseToRemote(type: Exec, dependsOn: ['compile', 'copyStaticFiles']) {
+  description 'Copies contents of the build directory to target host. Uses $user and $hostname variables for ssh, set them beforehand.'
+  commandLine './bin/copy_release_to_remote'
+}
+
+task installDaemonizeOnRemote(type: Exec) {
+  description 'Installs daemonize on the target host if it is not yet installed. Uses $user and $hostname variables for ssh, set them beforehand.'
+  commandLine './bin/install_daemonize_on_remote'
+}
+
+task startAppOnRemote(type: Exec) {
+  description 'Starts the app on the target host via daemonize. Uses $user and $hostname variables for ssh, set them beforehand.'
+  commandLine './bin/start_app_on_remote'
+}
+
+task stopAppOnRemote(type: Exec) {
+  description 'Stops the app on the target host (kills the process). Uses $user and $hostname variables for ssh, set them beforehand.'
+  commandLine './bin/stop_app_on_remote'
+}
+
+task deploy(dependsOn: ['stopAppOnRemote', 'copyReleaseToRemote', 'installDaemonizeOnRemote', 'startAppOnRemote']) {
+  description 'Deploys the app to he target host. Uses $user and $hostname variables for ssh, set them beforehand.'
+  doLast {
+    println "Successfully deployed the app!🤘"
+  }
+}
+
+copyReleaseToRemote.mustRunAfter stopAppOnRemote
+startAppOnRemote.mustRunAfter installDaemonizeOnRemote
+startAppOnRemote.mustRunAfter copyReleaseToRemote
